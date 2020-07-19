@@ -1,0 +1,22 @@
+{
+  "name": "rename_me",
+  "version": "0.0.1",
+  "description": "Syntax highlighter",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "tbd"
+  },
+  "keywords": [
+    "tbd"
+  ],
+  "author": "Jaime Gensler",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@types/moo": "^0.5.3",
+    "moo": "^0.5.1"
+  }
+}
