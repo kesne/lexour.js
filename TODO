@@ -1,0 +1,31 @@
+// FUNCTIONALITY //
+[_] Complete basic rendering
+[_] Finish JavaScript Lexer
+[_] Complete token rendering
+[_] Add line number support
+[_] Figure out theme JSON formatting, use themes, decide on default theme (probably GitHub theme)
+[_] Figure out variable scope detection (maybe)
+[_] Add memories prop support
+[_] Add basic annotation support - comment annotations
+[_] Double check for accessibility / mobile-friendliness
+
+// FEATURES //
+[_] Add more annotation types (priority order: KEEP -> MARK AS -> NEXT LINE)
+[_] Allow basic prop passing (onClick, className, etc.)
+[_] Add indent detection and customization
+[_] Write Lexers for other languages (priority order: JSX -> TS -> TSX -> HTML -> CSS -> other)
+[_] Add READ AS annotation
+
+// CODE MAINTENANCE //
+[_] Check lexers for possible improvements (collapse single/double quote string states, etc.)
+
+// PACKAGE MAINTENANE //
+[_] Actually name the package
+[_] Add tags, licensce, keywords
+[_] Loosen React version requirement
+[_] ??? Move React to peer dependency ???
+
+// DOCS //
+[_] Write README
+[_] Make docs site
+[_] Host docs on GitHub
