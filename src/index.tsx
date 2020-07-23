@@ -1,5 +1,4 @@
 import React from 'react';
-import { LexerState } from 'moo';
 
 import { Props } from './types';
 import lexers from './lexers';
@@ -15,7 +14,7 @@ export default function CodeBlock({
     lineNumberStart = 1,
 }: Props) {
     const lexer = lexers[lang];
-    const colors = typeof theme === 'string' ? themes[theme] : theme;
+    const themeObj = typeof theme === 'string' ? themes[theme] : theme;
 
     //There may be a better way to split this to include the new line and not pass it in by force later.
     const codeLines = code.replace(/(?:^\n)|(?:\n$)/g, '').split('\n');
@@ -23,14 +22,13 @@ export default function CodeBlock({
     // This could be turned into a reduce to keep all the reduce state internal.
     let lexerState = lexer.reset().save();
     const codeComponents = codeLines.map(codeLine => {
-        console.log(codeLine);
         const tokens = Array.from(
             lexer.reset(`${codeLine}\n`, lexerState),
             token => (
                 <Token
                     type={token.type || ''}
                     value={token.value}
-                    theme={colors.styles}
+                    theme={themeObj.styles}
                     key={`${token.line}-${token.col}`}
                 />
             ),
@@ -44,7 +42,9 @@ export default function CodeBlock({
 
     return (
         <div>
-            <pre style={{ margin: 0, ...colors.default }}>{codeComponents}</pre>
+            <pre style={{ margin: 0, ...themeObj.default }}>
+                {codeComponents}
+            </pre>
         </div>
     );
 }
