@@ -11,21 +11,71 @@ export default moo.states({
         _PACKAGE_ANNOTATION_fullline: /\/\/\@.*?$/,
         _PACKAGE_ANNOTATION_inline: /\/\*\@.*?\@\*\//,
 
-        // [^]+? is "don't match no characters" - double check that this isn't an antipattern
-        // Something to this effect is needed to capture linebreaks within the comment
         COMMENT_block: { match: /\/\*/, push: 'commentBlock' },
         COMMENT_singleline: /\/\/.*?$/,
 
-        // Strings could and should probably be collapsed to one state entry with regex lookback
+        // Strings could probably be collapsed to one state entry with regex lookback
         STRING_singleStart: { match: "'", push: 'stringSingle' },
         STRING_doubleStart: { match: '"', push: 'stringDouble' },
 
-        // Template literal has additional rules
         TEMPLATELITERAL_start: { match: /\`.*?\`/, push: 'templateLiteral' },
 
         PUNCTUATION_leftBrace: { match: '{', push: 'main' },
         PUNCTUATION_rightBrace: { match: '}', pop: 1 },
+        PUNCTUATION_misc: /[\(\)\,\[\]\;]/,
 
+        KEYWORD_vardec_constant: { match: 'const', push: 'vardecConstant' },
+        KEYWORD_vardec_variable: {
+            match: ['let', 'var'],
+            push: 'vardecVariable',
+        },
+
+        NUMBER: /[\d\.]+?/,
+        BOOLISH: ['null', 'undefined', 'true', 'false'],
+        OPERATOR: [
+            // Math
+            '+',
+            '*',
+            '/',
+            '-',
+            '%',
+
+            // Assignment
+            '=',
+            '+=',
+            '-=',
+            '*=',
+            '/=',
+            '**=',
+            '<<=',
+            '>>=',
+            '>>>=',
+            '&=',
+            '^=',
+            '|=',
+            '&&=',
+            '||=',
+            '??=',
+
+            // Ternary (this may need some work)
+            '?',
+            ':',
+
+            // Incr, decr
+            '++',
+            '--',
+
+            // Logical
+            '&&',
+            '||',
+            '==',
+            '===',
+        ],
+
+        KEYWORDS: ['if', 'else', 'for', 'while', 'do', 'export', 'default'],
+        ARROWFUNCTION: '=>',
+
+        WHITESPACE: /[ \t]+/,
         NEWLINE: { match: /\n/, lineBreaks: true },
         INDENTATION: /^[ \t]+/,
     },
@@ -35,6 +85,7 @@ export default moo.states({
         NEWLINE: { match: /\n/, lineBreaks: true },
         COMMENT_content: /.+/,
     },
+    // Strings use greedy quantifiers, try another strategy in the future
     stringSingle: {
         ...STRING_escapes,
         STRING_singleEnd: { match: "'", pop: 1 },
@@ -51,5 +102,17 @@ export default moo.states({
         TEMP_LITERAL_interpolation_start: { match: '${', push: 'main' },
         NEWLINE: { match: /\n/, lineBreaks: true },
         WHITESPACE: /[ \t]+/,
+    },
+    vardecConstant: {
+        WHITESPACE: /[ \t]+/,
+        // This is potentially not the best strategy
+        PUNCTUATION_destructuringStart: ['{', '['],
+        CONSTANT_name: { match: /[_$A-Za-z][_$A-Za-z0-9]*/, pop: 1 },
+    },
+    vardecVariable: {
+        WHITESPACE: /[ \t]+/,
+        // This is (again) potentially not the best strategy
+        PUNCTUATION_destructuringStart: ['{', '['],
+        VARIABLE_name: { match: /[_$A-Za-z][_$A-Za-z0-9]*/, pop: 1 },
     },
 });
