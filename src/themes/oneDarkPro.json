@@ -30,6 +30,10 @@
         },
         "STRINGESCAPE": {
             "color": "#56b6c2"
+        },
+        "FUNCTION": {
+            "color": "#61afef",
+            "fontWeight": "bold"
         }
     }
 }

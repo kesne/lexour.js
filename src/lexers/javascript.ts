@@ -24,11 +24,26 @@ export default moo.states({
         PUNCTUATION_rightBrace: { match: '}', pop: 1 },
         PUNCTUATION_misc: /[\(\)\,\[\]\;]/,
 
+        KEYWORD: [
+            'if',
+            'else',
+            'for',
+            'while',
+            'do',
+            'export',
+            'default',
+            'return',
+        ],
         KEYWORD_vardec_constant: { match: 'const', push: 'vardecConstant' },
         KEYWORD_vardec_variable: {
             match: ['let', 'var'],
             push: 'vardecVariable',
         },
+        KEYWORD_vardec_function: {
+            match: /function\*?/,
+            push: 'vardecFunction',
+        },
+        VARIABLE_unknown: /[_$A-Za-z][_$A-Za-z0-9]*/,
 
         NUMBER: /[\d\.]+?/,
         BOOLISH: ['null', 'undefined', 'true', 'false'],
@@ -71,8 +86,6 @@ export default moo.states({
             '==',
             '===',
         ],
-
-        KEYWORDS: ['if', 'else', 'for', 'while', 'do', 'export', 'default'],
         ARROWFUNCTION: '=>',
 
         WHITESPACE: /[ \t]+/,
@@ -114,5 +127,9 @@ export default moo.states({
         // This is (again) potentially not the best strategy
         PUNCTUATION_destructuringStart: ['{', '['],
         VARIABLE_name: { match: /[_$A-Za-z][_$A-Za-z0-9]*/, pop: 1 },
+    },
+    vardecFunction: {
+        WHITESPACE: /[ \t]+/,
+        FUNCTION_name: { match: /[_$A-Za-z][_$A-Za-z0-9]*/, pop: 1 },
     },
 });
