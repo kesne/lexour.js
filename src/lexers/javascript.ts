@@ -1,8 +1,9 @@
 import moo from 'moo';
 
+// Strings being able to split over lines is going to take some tricks
 const STRING_escapes = {
-    STRING_unicodeEscape: /\\u[a-fA-F0-9]{4}/,
-    STRING_characterEscape: /\\./,
+    STRINGESCAPE_unicode: /\\u[a-fA-F0-9]{4}/,
+    STRINGESCAPE_character: /\\./,
 };
 
 export default moo.states({
@@ -12,40 +13,43 @@ export default moo.states({
 
         // [^]+? is "don't match no characters" - double check that this isn't an antipattern
         // Something to this effect is needed to capture linebreaks within the comment
-        COMMENT_multiline: { match: /\/\*[^]+?\*\//, lineBreaks: true },
+        COMMENT_block: { match: /\/\*/, push: 'commentBlock' },
         COMMENT_singleline: /\/\/.*?$/,
 
-        // Strings could and should probably be collapsed to one state entry with positive lookback
-        STRING_SINGLE_start: { match: "'", push: 'stringSingle' },
-        STRING_DOUBLE_start: { match: '"', push: 'stringDouble' },
+        // Strings could and should probably be collapsed to one state entry with regex lookback
+        STRING_singleStart: { match: "'", push: 'stringSingle' },
+        STRING_doubleStart: { match: '"', push: 'stringDouble' },
 
         // Template literal has additional rules
-        TEMPL_LITERAL_start: { match: /\`.*?\`/, push: 'templateLiteral' },
+        TEMPLATELITERAL_start: { match: /\`.*?\`/, push: 'templateLiteral' },
 
-        LEFT_BRACE: { match: '{', push: 'main' },
-        RIGHT_BRACE: { match: '}', pop: 1 },
+        PUNCTUATION_leftBrace: { match: '{', push: 'main' },
+        PUNCTUATION_rightBrace: { match: '}', pop: 1 },
 
-        LINE_BREAK: { match: /\n/, lineBreaks: true },
+        NEWLINE: { match: /\n/, lineBreaks: true },
         INDENTATION: /^[ \t]+/,
-
-        // This should be unnecessary now, but keep an eye for anything that matches it.
-        WHITESPACE: /[ \t]+/,
+    },
+    commentBlock: {
+        COMMENT_block_end: { match: /\*\//, pop: 1 },
+        INDENTATION: /^[ \t]+/,
+        NEWLINE: { match: /\n/, lineBreaks: true },
+        COMMENT_content: /.+/,
     },
     stringSingle: {
         ...STRING_escapes,
-        STRING_SINGLE_end: { match: "'", pop: 1 },
-        STRING_SINGLE_content: /[^'\n]+/,
+        STRING_singleEnd: { match: "'", pop: 1 },
+        STRING_singleContent: /[^'\n]+/,
     },
     stringDouble: {
         ...STRING_escapes,
-        STRING_DOUBLE_end: { match: '"', pop: 1 },
-        STRING_DOUBLE_content: /[^"\n]+/,
+        STRING_doubleEnd: { match: '"', pop: 1 },
+        STRING_doubleContent: /[^"\n]+/,
     },
     templateLiteral: {
         ...STRING_escapes,
         TEMP_LITERAL_end: { match: '`', pop: 1 },
         TEMP_LITERAL_interpolation_start: { match: '${', push: 'main' },
-        LINE_BREAK: { match: /\n/, lineBreaks: true },
+        NEWLINE: { match: /\n/, lineBreaks: true },
         WHITESPACE: /[ \t]+/,
     },
 });
