@@ -1,6 +1,6 @@
 {
     "default": {
-        "text": "#abb2bf",
+        "color": "#abb2bf",
         "background": "#282c34"
     },
     "styles": {
@@ -9,6 +9,27 @@
         },
         "COMMENT": {
             "fontStyle": "italic"
+        },
+        "OPERATOR": {
+            "color": "#56b6c2"
+        },
+        "NUMBER": {
+            "color": "#d19a66"
+        },
+        "BOOLISH": {
+            "color": "#d19a66"
+        },
+        "CONSTANT": {
+            "color": "#e5c07b"
+        },
+        "VARIABLE": {
+            "color": "rgb(224, 108, 117)"
+        },
+        "KEYWORD": {
+            "color": "#c678dd"
+        },
+        "STRINGESCAPE": {
+            "color": "#56b6c2"
         }
     }
 }
