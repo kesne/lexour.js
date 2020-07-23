@@ -1,3 +1,14 @@
 {
-    "test": "poopy"
+    "default": {
+        "text": "#abb2bf",
+        "background": "#282c34"
+    },
+    "styles": {
+        "STRING": {
+            "color": "#98c379"
+        },
+        "COMMENT": {
+            "fontStyle": "italic"
+        }
+    }
 }
