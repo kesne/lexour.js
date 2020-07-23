@@ -1,4 +1,4 @@
-export interface Theme {}
+export type Theme = 'oneDarkPro';
 export type Lang =
     | 'javascript'
     | 'js' /* | 'typescript' | 'ts' | 'jsx' | 'tsx'*/;
