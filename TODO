@@ -1,5 +1,5 @@
 // FUNCTIONALITY //
-[_] Complete basic rendering
+[X] Complete basic rendering
 [_] Finish JavaScript Lexer
 [_] Complete token rendering
 [_] Add line number support
