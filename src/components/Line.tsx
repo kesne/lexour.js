@@ -2,17 +2,13 @@ import React from 'react';
 
 type Props = {
     children: React.ReactNodeArray;
-    includeLineNumbers: boolean;
     lineNumber: number;
 };
 
-export default function Line({
-    children,
-    includeLineNumbers,
-    lineNumber,
-}: Props) {
-    const lineNumComp = includeLineNumbers ? (
-        <span style={{ margin: '0 1rem 0 0.5rem' }}>{lineNumber}</span>
+export default function Line({ children, lineNumber }: Props) {
+    const test = `${' '.repeat(4 - lineNumber.toString().length)}${lineNumber}`;
+    const lineNumComp = lineNumber ? (
+        <span style={{ margin: '0 1rem 0 0.25rem' }}>{test}</span>
     ) : null;
     return (
         <div>

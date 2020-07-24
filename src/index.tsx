@@ -10,17 +10,18 @@ export default function CodeBlock({
     code,
     lang,
     theme = 'oneDarkPro',
-    includeLineNumbers = false,
-    lineNumberStart = 1,
+    lineNumberStart = 0,
 }: Props) {
     const lexer = lexers[lang];
+    // Type of theme will be expanded to be either a string for the built-in
+    // themes, or a JSON object of the same format.
     const themeObj = typeof theme === 'string' ? themes[theme] : theme;
+    const line = lineNumberStart < 1 ? 0 : Math.floor(lineNumberStart);
 
     //There may be a better way to split this to include the new line and not pass it in by force later.
     const codeLines = code.replace(/(?:^\n)|(?:\n$)/g, '').split('\n');
-
     // This could be turned into a reduce to keep all the reduce state internal.
-    let lexerState = { ...lexer.reset().save(), line: lineNumberStart };
+    let lexerState = { ...lexer.reset().save(), line };
     const codeComponents = codeLines.map(codeLine => {
         const tokens = Array.from(
             lexer.reset(`${codeLine}\n`, lexerState),
@@ -39,8 +40,7 @@ export default function CodeBlock({
 
         return (
             <Line
-                includeLineNumbers={includeLineNumbers}
-                lineNumber={lexerState.line - 1}
+                lineNumber={line ? lexerState.line - 1 : 0}
                 key={lexerState.line}
             >
                 {tokens}

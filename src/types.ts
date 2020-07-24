@@ -8,7 +8,5 @@ export type Props = {
     lang: Lang;
 
     theme?: Theme;
-
-    includeLineNumbers?: boolean;
     lineNumberStart?: number;
 };
