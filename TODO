@@ -3,7 +3,7 @@
 [_] Finish JavaScript Lexer
 [_] Complete token rendering
 [_] Add line number support
-[_] Figure out theme JSON formatting, use themes, decide on default theme (probably GitHub theme)
+[X] Figure out theme JSON formatting, use themes, decide on default theme (probably GitHub theme)
 [_] Figure out variable scope detection (maybe)
 [_] Add memories prop support
 [_] Add basic annotation support - comment annotations
@@ -18,6 +18,7 @@
 
 // CODE MAINTENANCE //
 [_] Check lexers for possible improvements (collapse single/double quote string states, etc.)
+[_] Probably reformat theme JSON
 
 // PACKAGE MAINTENANE //
 [_] Actually name the package
