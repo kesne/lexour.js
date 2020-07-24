@@ -20,7 +20,7 @@ export default function CodeBlock({
     const codeLines = code.replace(/(?:^\n)|(?:\n$)/g, '').split('\n');
 
     // This could be turned into a reduce to keep all the reduce state internal.
-    let lexerState = lexer.reset().save();
+    let lexerState = { ...lexer.reset().save(), line: lineNumberStart };
     const codeComponents = codeLines.map(codeLine => {
         const tokens = Array.from(
             lexer.reset(`${codeLine}\n`, lexerState),
@@ -37,7 +37,15 @@ export default function CodeBlock({
         // NEXT LINE annotation can be implemented here by checking tokens at this point.
         lexerState = { ...lexer.save(), line: lexerState.line + 1, col: 1 };
 
-        return <Line key={lexerState.line - 1}>{tokens}</Line>;
+        return (
+            <Line
+                includeLineNumbers={includeLineNumbers}
+                lineNumber={lexerState.line - 1}
+                key={lexerState.line}
+            >
+                {tokens}
+            </Line>
+        );
     });
 
     return (
