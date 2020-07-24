@@ -18,7 +18,6 @@
 
 // CODE MAINTENANCE //
 [_] Check lexers for possible improvements (collapse single/double quote string states, etc.)
-[_] Probably reformat theme JSON
 
 // PACKAGE MAINTENANE //
 [_] Actually name the package
@@ -30,3 +29,10 @@
 [_] Write README
 [_] Make docs site
 [_] Host docs on GitHub
+
+
+// NOTES //
+Consider other possibly ways to format theme JSONs
+    - the current format is a little overkill/repetative
+It may be more convenient to have line numbers be decided by one prop
+    - Line number of -1 (or 0? < 1?) could be don't render, anything else will render
