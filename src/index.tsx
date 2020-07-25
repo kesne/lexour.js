@@ -25,14 +25,16 @@ export default function CodeBlock({
     const codeComponents = codeLines.map(codeLine => {
         const tokens = Array.from(
             lexer.reset(`${codeLine}\n`, lexerState),
-            token => (
-                <Token
-                    type={token.type || ''}
-                    value={token.value}
-                    theme={themeObj.styles}
-                    key={`${token.line}-${token.col}`}
-                />
-            ),
+            token => {
+                return (
+                    <Token
+                        type={token.type || ''}
+                        value={token.value}
+                        theme={themeObj.styles}
+                        key={token.col}
+                    />
+                );
+            },
         );
 
         // NEXT LINE annotation can be implemented here by checking tokens at this point.
