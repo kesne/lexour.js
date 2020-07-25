@@ -34,5 +34,3 @@
 // NOTES //
 Consider other possibly ways to format theme JSONs
     - the current format is a little overkill/repetative
-It may be more convenient to have line numbers be decided by one prop
-    - Line number of -1 (or 0? < 1?) could be don't render, anything else will render
