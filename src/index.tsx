@@ -23,6 +23,7 @@ export default function CodeBlock({
     // This could be turned into a reduce to keep all the reduce state internal.
     let lexerState = { ...lexer.reset().save(), line };
     const codeComponents = codeLines.map(codeLine => {
+        const currentLineNum = lexer.save().line;
         const tokens = Array.from(
             lexer.reset(`${codeLine}\n`, lexerState),
             token => {
@@ -38,13 +39,10 @@ export default function CodeBlock({
         );
 
         // NEXT LINE annotation can be implemented here by checking tokens at this point.
-        lexerState = { ...lexer.save(), line: lexerState.line + 1, col: 1 };
+        lexerState = { ...lexer.save(), line: currentLineNum + 1, col: 1 };
 
         return (
-            <Line
-                lineNumber={line ? lexerState.line - 1 : 0}
-                key={lexerState.line}
-            >
+            <Line lineNumber={line ? currentLineNum : 0} key={currentLineNum}>
                 {tokens}
             </Line>
         );
