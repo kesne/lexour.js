@@ -8,8 +8,15 @@ const STRING_escapes = {
 
 export default moo.states({
     main: {
-        _PACKAGE_ANNOTATION_fullline: /\/\/\@.*?$/,
-        _PACKAGE_ANNOTATION_inline: /\/\*\@.*?\@\*\//,
+        _PACKAGE_ANNOTATION_fullline: {
+            match: /\/\/@.*?$/,
+            value: s => s.replace(/(?:^\/\/@[ \t]*?)|(?:[ \t]*?$)/g, ''),
+        },
+        _PACKAGE_ANNOTATION_inline: {
+            // This isn't quite working
+            match: /\/\*@.*?(?=@\*\/)@\*\//,
+            value: s => s.replace(/(?:^\/\*@[ \t]*?)|(?:[ \t]*?@\*\/$)/g, ''),
+        },
 
         COMMENT_block: { match: /\/\*/, push: 'commentBlock' },
         COMMENT_singleline: /\/\/.*?$/,
@@ -85,6 +92,12 @@ export default moo.states({
             '||',
             '==',
             '===',
+
+            // Comparison
+            '>=',
+            '>',
+            '<',
+            '<=',
         ],
         ARROWFUNCTION: '=>',
 
