@@ -2,7 +2,7 @@
 [X] Complete basic rendering
 [_] Finish JavaScript Lexer
 [_] Complete token rendering
-[_] Add line number support
+[X] Add line number support
 [X] Figure out theme JSON formatting, use themes, decide on default theme (probably GitHub theme)
 [_] Figure out variable scope detection (maybe)
 [_] Add memories prop support
