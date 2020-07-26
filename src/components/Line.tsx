@@ -7,10 +7,12 @@ type Props = {
 
 export default function Line({ children, lineNumber }: Props) {
     // This isn't an optimal solution to spacing numbers right
-    // Would be better if I found the highest number and spaced accordingly
-    const test = `${' '.repeat(4 - lineNumber.toString().length)}${lineNumber}`;
+    // Maybe find the highest line number and space accordingly
+    const lineNumberString = lineNumber.toString(10);
     const lineNumComp = lineNumber ? (
-        <span style={{ margin: '0 1rem 0 0.25rem' }}>{test}</span>
+        <span style={{ margin: '0 1rem 0 0.25rem' }}>
+            {' '.repeat(4 - lineNumberString.length).concat(lineNumberString)}
+        </span>
     ) : null;
     return (
         <div>
