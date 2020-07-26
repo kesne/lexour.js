@@ -10,9 +10,8 @@ type Props = {
 
 export default function Token({ type, value, theme }: Props) {
     if (type === 'NEWLINE' || !type) return null;
-    console.log(type, value);
 
-    // This style grab solution sucks, do it better
-    const styles = theme[type.split('_')[0]] || undefined;
+    const primaryType = type.replace(/(?<=^_?[A-Z]+)_.+/, '');
+    const styles = theme[primaryType] || undefined;
     return <span style={styles}>{value}</span>;
 }
