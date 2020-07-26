@@ -3,7 +3,7 @@ import { Token } from 'moo';
 import { Theme } from '../types';
 
 type Props = {
-    type: string;
+    type: string | undefined;
     value: string;
     theme: any;
 };

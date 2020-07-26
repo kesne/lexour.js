@@ -29,7 +29,7 @@ export default function CodeBlock({
             token => {
                 return (
                     <Token
-                        type={token.type || ''}
+                        type={token.type}
                         value={token.value}
                         theme={themeObj.styles}
                         key={token.col}
@@ -38,7 +38,6 @@ export default function CodeBlock({
             },
         );
 
-        // NEXT LINE annotation can be implemented here by checking tokens at this point.
         lexerState = { ...lexer.save(), line: currentLineNum + 1, col: 1 };
 
         return (
