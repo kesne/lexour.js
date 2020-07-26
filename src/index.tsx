@@ -25,7 +25,7 @@ export default function CodeBlock({
     const codeComponents = codeLines.map(codeLine => {
         const currentLineNum = lexer.save().line;
         const tokens = Array.from(
-            lexer.reset(`${codeLine}\n`, lexerState),
+            lexer.reset(codeLine.concat('\n'), lexerState),
             token => {
                 return (
                     <Token
