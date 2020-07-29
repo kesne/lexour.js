@@ -10,23 +10,26 @@ export default function CodeBlock({
     code,
     lang,
     theme = 'oneDarkPro',
-    lineNumberStart = 0,
+    firstLine = 0,
 }: Props) {
     const lexer = lexers[lang];
     // Type of theme will be expanded to be either a string for the built-in
     // themes, or a JSON object of the same format.
     const themeObj = typeof theme === 'string' ? themes[theme] : theme;
-    const line = lineNumberStart < 1 ? 0 : Math.floor(lineNumberStart);
+    const renderLineNumbers = firstLine >= 1;
+    const lineStart = renderLineNumbers ? Math.floor(firstLine) : 1;
 
-    //There may be a better way to split this to include the new line and not pass it in by force later.
+    // There may be a better way to split this to include the new line and not pass it in by force later.
     const codeLines = code.replace(/(?:^\n)|(?:\n$)/g, '').split('\n');
     // This could be turned into a reduce to keep all the reduce state internal.
-    let lexerState = { ...lexer.reset().save(), line };
+    let lexerState = { ...lexer.reset().save(), line: lineStart };
     const codeComponents = codeLines.map(codeLine => {
-        const currentLineNum = lexer.save().line;
         const tokens = Array.from(
             lexer.reset(codeLine.concat('\n'), lexerState),
             token => {
+                // The theme pass could be simplified by finding the primary
+                // token type here, and only passing the value and the
+                // corresponding styles.
                 return (
                     <Token
                         type={token.type}
@@ -38,15 +41,19 @@ export default function CodeBlock({
             },
         );
 
-        lexerState = { ...lexer.save(), line: currentLineNum + 1, col: 1 };
-
+        const currentLine = lexerState.line;
+        lexerState = { ...lexer.save() };
         return (
-            <Line lineNumber={line ? currentLineNum : 0} key={currentLineNum}>
+            <Line
+                lineNumber={renderLineNumbers ? currentLine : 0}
+                key={currentLine}
+            >
                 {tokens}
             </Line>
         );
     });
 
+    // Style override (should I do this?) + default styles
     return (
         <div>
             <pre style={{ margin: 0, ...themeObj.default }}>

@@ -8,5 +8,5 @@ export type Props = {
     lang: Lang;
 
     theme?: Theme;
-    lineNumberStart?: number;
+    firstLine?: number;
 };
