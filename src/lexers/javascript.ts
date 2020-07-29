@@ -1,4 +1,5 @@
 import moo from 'moo';
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Lexical_grammar
 
 // Strings being able to split over lines is going to take some tricks
 const STRINGESCAPE = /(?:\\u[A-Fa-f0-9]{4})|(?:\\.)/;
@@ -36,19 +37,26 @@ export default moo.states({
             'export',
             'default',
             'return',
+            'constructor',
         ],
-        KEYWORD_vardec_constant: { match: 'const', push: 'vardecConstant' },
-        KEYWORD_vardec_variable: {
+        KEYWORD_declare_constant: { match: 'const', push: 'declareConstant' },
+        KEYWORD_declare_variable: {
             match: ['let', 'var'],
-            push: 'vardecVariable',
+            push: 'declareVariable',
         },
-        KEYWORD_vardec_function: {
+        KEYWORD_declare_function: {
             match: /function\*?/,
-            push: 'vardecFunction',
+            push: 'declareFunction',
+        },
+        KEYWORD_declare_class: {
+            match: 'class',
+            push: 'declareClass',
         },
         BOOLISH: ['null', 'undefined', 'true', 'false'],
+        CONSTANT_this: 'this',
 
         VARIABLE_unknown: /[_$A-Za-z][_$A-Za-z0-9]*/,
+        FUNCTION_unknown: /[_$A-Za-z][_$A-Za-z0-9]*(?=[ \t]*\(.*?)/,
         NUMBER: /[\d\.]+?/,
         OPERATOR: [
             // Math
@@ -121,20 +129,27 @@ export default moo.states({
         NEWLINE: { match: /\n/, lineBreaks: true },
         WHITESPACE: /[ \t]+/,
     },
-    vardecConstant: {
+
+    // all declare states can be integrated into main with a lookback
+    declareConstant: {
         WHITESPACE: /[ \t]+/,
         // This is potentially not the best strategy
         PUNCTUATION_destructuringStart: ['{', '['],
         CONSTANT_name: { match: /[_$A-Za-z][_$A-Za-z0-9]+/, pop: 1 },
     },
-    vardecVariable: {
+    declareVariable: {
         WHITESPACE: /[ \t]+/,
         // This is (again) potentially not the best strategy
         PUNCTUATION_destructuringStart: ['{', '['],
         VARIABLE_name: { match: /[_$A-Za-z][_$A-Za-z0-9]+/, pop: 1 },
     },
-    vardecFunction: {
+    declareFunction: {
         WHITESPACE: /[ \t]+/,
         FUNCTION_name: { match: /[_$A-Za-z][_$A-Za-z0-9]+/, pop: 1 },
+    },
+    // TO DO
+    declareClass: {
+        WHITESPACE: /[ \t]+/,
+        CONSTANT_classname: { match: /[_$A-Za-z][_$A-Za-z0-9]+/, pop: 1 },
     },
 });
