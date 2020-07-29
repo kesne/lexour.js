@@ -26,7 +26,7 @@ export default moo.states({
 
         PUNCTUATION_leftBrace: { match: '{', push: 'main' },
         PUNCTUATION_rightBrace: { match: '}', pop: 1 },
-        PUNCTUATION_misc: /[\(\)\,\[\]\;]/,
+        PUNCTUATION_misc: /[\(\)\,\[\]\;\.]/,
 
         KEYWORD: [
             'if',
@@ -57,7 +57,7 @@ export default moo.states({
 
         VARIABLE_unknown: /[_$A-Za-z][_$A-Za-z0-9]*/,
         FUNCTION_unknown: /[_$A-Za-z][_$A-Za-z0-9]*(?=[ \t]*\(.*?)/,
-        NUMBER: /[\d\.]+?/,
+        NUMBER: /[\d]+(?:\.[\d]+)?/,
         OPERATOR: [
             // Math
             '+',
