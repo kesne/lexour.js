@@ -38,12 +38,12 @@ export default moo.states({
             'default',
             'return',
             'constructor',
+            'const',
+            'let',
+            'var',
         ],
-        KEYWORD_declare_constant: { match: 'const', push: 'declareConstant' },
-        KEYWORD_declare_variable: {
-            match: ['let', 'var'],
-            push: 'declareVariable',
-        },
+        CONSTANT_declarationName: /(?<=const[\[\{\t, _$A-Za-z]+?)[_$A-Za-z](?:[_$A-Za-z0-9]+)?/,
+        VARIABLE_declarationName: /(?<=(?:let|var)[\[\{\t, _$A-Za-z]+?)[_$A-Za-z](?:[_$A-Za-z0-9]+)?/,
         KEYWORD_declare_function: {
             match: /function\*?/,
             push: 'declareFunction',
@@ -55,6 +55,7 @@ export default moo.states({
         BOOLISH: ['null', 'undefined', 'true', 'false'],
         CONSTANT_this: 'this',
 
+        // FUNCTION_declarationArrow: /[_$A-Za-z][_$A-Za-z0-9]*(?=[ \t]*?\=[ \t]*?\(.*?\)[ \t]/,
         VARIABLE_unknown: /[_$A-Za-z][_$A-Za-z0-9]*/,
         FUNCTION_unknown: /[_$A-Za-z][_$A-Za-z0-9]*(?=[ \t]*\(.*?)/,
         NUMBER: /[\d]+(?:\.[\d]+)?/,
@@ -131,18 +132,6 @@ export default moo.states({
     },
 
     // all declare states can be integrated into main with a lookback
-    declareConstant: {
-        WHITESPACE: /[ \t]+/,
-        // This is potentially not the best strategy
-        PUNCTUATION_destructuringStart: ['{', '['],
-        CONSTANT_name: { match: /[_$A-Za-z][_$A-Za-z0-9]+/, pop: 1 },
-    },
-    declareVariable: {
-        WHITESPACE: /[ \t]+/,
-        // This is (again) potentially not the best strategy
-        PUNCTUATION_destructuringStart: ['{', '['],
-        VARIABLE_name: { match: /[_$A-Za-z][_$A-Za-z0-9]+/, pop: 1 },
-    },
     declareFunction: {
         WHITESPACE: /[ \t]+/,
         FUNCTION_name: { match: /[_$A-Za-z][_$A-Za-z0-9]+/, pop: 1 },
