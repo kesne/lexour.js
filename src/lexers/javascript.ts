@@ -1,6 +1,8 @@
 import moo from 'moo';
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Lexical_grammar
 
+// This may not be exactly perfect, but it's sufficient for now.
+const validIdentifier = '[_$A-Za-z](?:[_$A-Za-z0-9]+)?';
 // Strings being able to split over lines is going to take some tricks
 const STRINGESCAPE = /(?:\\u[A-Fa-f0-9]{4})|(?:\\.)/;
 
@@ -28,6 +30,19 @@ export default moo.states({
         PUNCTUATION_rightBrace: { match: '}', pop: 1 },
         PUNCTUATION_misc: /[\(\)\,\[\]\;\.]/,
 
+        VARIABLE_declaration: new RegExp(
+            '(?<=(?:let|var)[\\[{\\t, _$A-Za-z]+?)' + validIdentifier,
+        ),
+        FUNCTION_declaration: new RegExp(
+            '(?<=function\\*?[\\t ]+?)' + validIdentifier,
+        ),
+        CONSTANT_declaration: new RegExp(
+            '(?<=const[[{\\t, _$A-Za-z]+?)' + validIdentifier,
+        ),
+        CONSTANT_classDeclaration: new RegExp(
+            '(?<=class\\*?[\\t ]+?)' + validIdentifier,
+        ),
+        CONSTANT_this: 'this',
         KEYWORD: [
             'if',
             'else',
@@ -41,23 +56,14 @@ export default moo.states({
             'const',
             'let',
             'var',
+            'function',
+            'function*',
         ],
-        CONSTANT_declarationName: /(?<=const[\[\{\t, _$A-Za-z]+?)[_$A-Za-z](?:[_$A-Za-z0-9]+)?/,
-        VARIABLE_declarationName: /(?<=(?:let|var)[\[\{\t, _$A-Za-z]+?)[_$A-Za-z](?:[_$A-Za-z0-9]+)?/,
-        KEYWORD_declare_function: {
-            match: /function\*?/,
-            push: 'declareFunction',
-        },
-        KEYWORD_declare_class: {
-            match: 'class',
-            push: 'declareClass',
-        },
         BOOLISH: ['null', 'undefined', 'true', 'false'],
-        CONSTANT_this: 'this',
 
         // FUNCTION_declarationArrow: /[_$A-Za-z][_$A-Za-z0-9]*(?=[ \t]*?\=[ \t]*?\(.*?\)[ \t]/,
-        VARIABLE_unknown: /[_$A-Za-z][_$A-Za-z0-9]*/,
-        FUNCTION_unknown: /[_$A-Za-z][_$A-Za-z0-9]*(?=[ \t]*\(.*?)/,
+        VARIABLE_unknownRef: /[_$A-Za-z][_$A-Za-z0-9]*/,
+        FUNCTION_invocation: /[_$A-Za-z][_$A-Za-z0-9]*(?=[ \t]*\(.*?)/,
         NUMBER: /[\d]+(?:\.[\d]+)?/,
         OPERATOR: [
             // Math
@@ -116,8 +122,8 @@ export default moo.states({
         NEWLINE: { match: /\n/, lineBreaks: true },
         INDENTATION: /^[ \t]+/,
     },
-    // This works for now, but does create some unnecessary token breaks
-    // (but non-noticeable/problematic breaks)
+    // This works for now, but does create some unnecessary token groups
+    // (but non-noticeable/problematic groups)
     string: {
         STRINGESCAPE,
         STRING_content: /(?:[^\\]+?(?="|\\))|(?:[^\\]+?(?='|\\))/,
@@ -132,10 +138,6 @@ export default moo.states({
     },
 
     // all declare states can be integrated into main with a lookback
-    declareFunction: {
-        WHITESPACE: /[ \t]+/,
-        FUNCTION_name: { match: /[_$A-Za-z][_$A-Za-z0-9]+/, pop: 1 },
-    },
     // TO DO
     declareClass: {
         WHITESPACE: /[ \t]+/,
