@@ -123,9 +123,10 @@ export default moo.states({
         ],
         ARROWFUNCTION: '=>',
 
+        EMPTYLINE: { match: /^[ \t]*\n^/, lineBreaks: true },
+        NEWLINE: { match: /\n/, lineBreaks: true },
         INDENTATION: /^[ \t]+/,
         WHITESPACE: /[ \t]+/,
-        NEWLINE: { match: /\n/, lineBreaks: true },
     },
     commentBlock: {
         COMMENT_block_end: { match: /\*\//, pop: 1 },
