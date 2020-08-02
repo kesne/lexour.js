@@ -19,7 +19,9 @@ export default moo.states({
         },
 
         COMMENT_block: { match: /\/\*/, push: 'commentBlock' },
-        COMMENT_singleline: /\/\/.*?$/,
+        COMMENT_singleline: /\/\/.*$/,
+        // Hashbang is apparently a new addition and also I think not finalized
+        COMMENT_hashBang: /^#!.*$/,
 
         // Strings could probably be collapsed to one state entry with regex lookback
         STRING_start: { match: ["'", '"'], push: 'string' },
@@ -40,7 +42,7 @@ export default moo.states({
             '(?<=const[[{\\t, _$A-Za-z]+?)' + validIdentifier,
         ),
         CONSTANT_classDeclaration: new RegExp(
-            '(?<=class\\*?[\\t ]+?)' + validIdentifier,
+            '(?<=class[\\t ]+?)' + validIdentifier,
         ),
         CONSTANT_this: 'this',
         KEYWORD: [
@@ -58,13 +60,22 @@ export default moo.states({
             'var',
             'function',
             'function*',
+            'class',
+            'extends',
+            'new',
         ],
         BOOLISH: ['null', 'undefined', 'true', 'false'],
         NUMBER: /[\d]+(?:\.[\d]+)?/,
 
         // FUNCTION_declarationArrow: /[_$A-Za-z][_$A-Za-z0-9]*(?=[ \t]*?\=[ \t]*?\(.*?\)[ \t]/,
-        VARIABLE_unknownRef: new RegExp(validIdentifier),
+        CONSTANT_superInvocation: /super(?=[ \t]*\(.*?)/,
+        CONSTANT_classRef: new RegExp(
+            '(?<=(?:extends|new)[\\t ]+?)' + validIdentifier,
+        ),
         FUNCTION_invocation: /[_$A-Za-z][_$A-Za-z0-9]*(?=[ \t]*\(.*?)/,
+        CONSTANT_unknownRef: /[A-Z][_$A-Za-z0-9]*/,
+        VARIABLE_unknownRef: new RegExp(validIdentifier),
+
         OPERATOR: [
             // Math
             '+',
@@ -135,12 +146,5 @@ export default moo.states({
         TEMP_LITERAL_interpolation_start: { match: '${', push: 'main' },
         NEWLINE: { match: /\n/, lineBreaks: true },
         WHITESPACE: /[ \t]+/,
-    },
-
-    // all declare states can be integrated into main with a lookback
-    // TO DO
-    declareClass: {
-        WHITESPACE: /[ \t]+/,
-        CONSTANT_classname: { match: /[_$A-Za-z][_$A-Za-z0-9]+/, pop: 1 },
     },
 });
