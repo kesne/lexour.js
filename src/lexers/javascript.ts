@@ -2,7 +2,7 @@ import moo from 'moo';
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Lexical_grammar
 
 // This may not be exactly perfect, but it's sufficient for now.
-const validIdentifier = '[_$A-Za-z](?:[_$A-Za-z0-9]+)?';
+const validIdentifier = '[_$A-Za-z][_$A-Za-z0-9]*';
 // Strings being able to split over lines is going to take some tricks
 const STRINGESCAPE = /(?:\\u[A-Fa-f0-9]{4})|(?:\\.)/;
 
@@ -60,11 +60,11 @@ export default moo.states({
             'function*',
         ],
         BOOLISH: ['null', 'undefined', 'true', 'false'],
+        NUMBER: /[\d]+(?:\.[\d]+)?/,
 
         // FUNCTION_declarationArrow: /[_$A-Za-z][_$A-Za-z0-9]*(?=[ \t]*?\=[ \t]*?\(.*?\)[ \t]/,
-        VARIABLE_unknownRef: /[_$A-Za-z][_$A-Za-z0-9]*/,
+        VARIABLE_unknownRef: new RegExp(validIdentifier),
         FUNCTION_invocation: /[_$A-Za-z][_$A-Za-z0-9]*(?=[ \t]*\(.*?)/,
-        NUMBER: /[\d]+(?:\.[\d]+)?/,
         OPERATOR: [
             // Math
             '+',
