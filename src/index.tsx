@@ -16,8 +16,8 @@ export default function CodeBlock({
     // Type of theme will be expanded to be either a string for the built-in
     // themes, or a JSON object of the same format.
     const themeObj = typeof theme === 'string' ? themes[theme] : theme;
-    const renderLineNumbers = firstLine >= 1;
-    const lineStart = renderLineNumbers ? Math.floor(firstLine) : 1;
+    const shouldRenderLineNumbers = firstLine >= 1;
+    const lineStart = shouldRenderLineNumbers ? Math.floor(firstLine) : 1;
 
     // There may be a better way to split this to include the new line and not pass it in by force later.
     const codeLines = code.replace(/(?:^\n)|(?:\n$)/g, '').split('\n');
@@ -45,7 +45,7 @@ export default function CodeBlock({
         lexerState = { ...lexer.save() };
         return (
             <Line
-                lineNumber={renderLineNumbers ? currentLine : 0}
+                lineNumber={shouldRenderLineNumbers ? currentLine : 0}
                 key={currentLine}
             >
                 {tokens}
