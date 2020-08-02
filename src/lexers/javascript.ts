@@ -96,17 +96,20 @@ export default moo.states({
         CONSTANT_classRef: new RegExp(
             '(?<=(?:extends|new)[\\t ]+?)' + validIdentifier,
         ),
-        FUNCTION_invocation: /[_$A-Za-z][_$A-Za-z0-9]*(?=[ \t]*\(.*?)/,
+        FUNCTION_invocation: new RegExp(validIdentifier + '(?=[ \\t]*\\(.*?)'),
         CONSTANT_unknownRef: /[A-Z][_$A-Za-z0-9]*/,
         VARIABLE_unknownRef: new RegExp(validIdentifier),
 
         OPERATOR: [
-            // Math
+            // Arithmetic
             '+',
             '*',
             '/',
             '-',
             '%',
+            '++',
+            '--',
+            '**',
 
             // Assignment
             '=',
@@ -129,21 +132,20 @@ export default moo.states({
             '?',
             ':',
 
-            // Incr, decr
-            '++',
-            '--',
-
             // Logical
-            '&&',
-            '||',
             '==',
+            '!=',
             '===',
-
-            // Comparison
+            '!==',
             '>=',
             '>',
             '<',
             '<=',
+
+            // Comparison
+            '&&',
+            '||',
+            '!',
         ],
         ARROWFUNCTION: '=>',
 
