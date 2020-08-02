@@ -3,20 +3,21 @@
         "color": "#abb2bf",
         "background": "#282c34"
     },
-    "styles": {
+    "lineNumbers": {
+        "color": "#5c6370"
+    },
+    "tokens": {
         "STRING": {
             "color": "#98c379"
         },
         "COMMENT": {
+            "color": "#7f848e",
             "fontStyle": "italic"
         },
         "OPERATOR": {
             "color": "#56b6c2"
         },
-        "NUMBER": {
-            "color": "#d19a66"
-        },
-        "BOOLISH": {
+        "LITERAL": {
             "color": "#d19a66"
         },
         "CONSTANT": {
@@ -33,6 +34,10 @@
         },
         "FUNCTION": {
             "color": "#61afef",
+            "fontWeight": "bold"
+        },
+        "METHOD": {
+            "color": "#56b6c2",
             "fontWeight": "bold"
         }
     }

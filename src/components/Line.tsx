@@ -1,16 +1,17 @@
 import React from 'react';
 
 type Props = {
-    children: React.ReactNodeArray;
     lineNumber: number;
+    style: React.CSSProperties;
+    children: React.ReactNodeArray;
 };
 
-export default function Line({ children, lineNumber }: Props) {
+export default function Line({ lineNumber, style, children }: Props) {
     // This isn't an optimal solution to spacing numbers right
     // Maybe find the highest line number and space accordingly
     const lineNumberString = lineNumber.toString(10);
     const lineNumComp = lineNumber ? (
-        <span style={{ margin: '0 1rem 0 0.25rem' }}>
+        <span style={{ margin: '0 1rem 0 0.25rem', ...style }}>
             {' '.repeat(4 - lineNumberString.length).concat(lineNumberString)}
         </span>
     ) : null;

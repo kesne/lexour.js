@@ -34,7 +34,7 @@ export default function CodeBlock({
                     <Token
                         type={token.type}
                         value={token.value}
-                        theme={themeObj.styles}
+                        theme={themeObj.tokens}
                         key={token.col}
                     />
                 );
@@ -46,6 +46,7 @@ export default function CodeBlock({
         return (
             <Line
                 lineNumber={shouldRenderLineNumbers ? currentLine : 0}
+                style={themeObj.lineNumbers}
                 key={currentLine}
             >
                 {tokens}
