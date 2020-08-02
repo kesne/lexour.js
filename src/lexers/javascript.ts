@@ -96,6 +96,9 @@ export default moo.states({
         CONSTANT_classRef: new RegExp(
             '(?<=(?:extends|new)[\\t ]+?)' + validIdentifier,
         ),
+        METHOD_invocation: new RegExp(
+            '(?<=\\.)' + validIdentifier + '(?=[ \\t]*\\(.*?)',
+        ),
         FUNCTION_invocation: new RegExp(validIdentifier + '(?=[ \\t]*\\(.*?)'),
         CONSTANT_unknownRef: /[A-Z][_$A-Za-z0-9]*/,
         VARIABLE_unknownRef: new RegExp(validIdentifier),
