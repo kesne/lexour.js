@@ -1,9 +1,6 @@
 // FUNCTIONALITY //
-[X] Complete basic rendering
 [_] Finish JavaScript Lexer
 [_] Complete token rendering
-[X] Add line number support
-[X] Figure out theme JSON formatting, use themes, decide on default theme (probably GitHub theme)
 [_] Figure out variable scope detection (maybe)
 [_] Add memories prop support
 [_] Add basic annotation support - comment annotations
@@ -17,6 +14,7 @@
 [_] Add READ AS annotation
 
 // CODE MAINTENANCE //
+[_] Redo token naming conventions (& theme).
 [_] Check lexers for possible improvements (collapse single/double quote string states, etc.)
 
 // PACKAGE MAINTENANE //
