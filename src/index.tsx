@@ -54,10 +54,6 @@ export default function CodeBlock({
 
     // Style override (should I do this?) + default styles
     return (
-        <div>
-            <pre style={{ margin: 0, ...themeObj.default }}>
-                {codeComponents}
-            </pre>
-        </div>
+        <pre style={{ margin: 0, ...themeObj.default }}>{codeComponents}</pre>
     );
 }
