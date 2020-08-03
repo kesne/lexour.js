@@ -26,17 +26,15 @@ export default function CodeBlock({
     const codeComponents = codeLines.map(codeLine => {
         const tokens = Array.from(
             lexer.reset(codeLine.concat('\n'), lexerState),
-            token => {
-                // The theme pass could be simplified by finding the primary
-                // token type here, and only passing the value and the
-                // corresponding styles.
+            ({ type, value, text, col }) => {
+                if (type === 'NEWLINE' || !type) {
+                    return null;
+                }
+                const primaryType = type.replace(/(?<=^_?[A-Z]+)_.+/, '');
+                // @ts-ignore FIX ME LATER
+                const styles = themeObj.tokens[primaryType] || undefined;
                 return (
-                    <Token
-                        type={token.type}
-                        value={token.value}
-                        theme={themeObj.tokens}
-                        key={token.col}
-                    />
+                    <Token type={type} value={value} style={styles} key={col} />
                 );
             },
         );
