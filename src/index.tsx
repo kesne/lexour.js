@@ -24,23 +24,55 @@ export default function CodeBlock({
     // This could be turned into a reduce to keep all the reduce state internal.
     let lexerState = { ...lexer.reset().save(), line: lineStart };
     const codeComponents = codeLines.map(codeLine => {
+        let preventLineRender = false;
+
         const tokens = Array.from(
             lexer.reset(codeLine.concat('\n'), lexerState),
-            ({ type, value, text, col }) => {
-                if (type === 'NEWLINE' || !type) {
-                    return null;
+            ({ type, value, col }, i) => {
+                switch (type) {
+                    case undefined: {
+                        throw new Error('Something has gone horribly wrong');
+                    }
+                    case '_LEXOUR_ANNOTATION_singleline': {
+                        if (i === 0) {
+                            preventLineRender = true;
+                        }
+                    }
+                    // This fall through is intentional
+                    case '_LEXOUR_ANNOTATION_inline': {
+                        return null;
+                    }
+                    case 'NEWLINE': {
+                        return null;
+                    }
+                    default: {
+                        const primaryType = type.replace(
+                            /(?<=^_?[A-Z]+)_.+/,
+                            '',
+                        );
+                        const styles =
+                            // @ts-ignore FIX ME LATER
+                            themeObj.tokens[primaryType] || undefined;
+                        return (
+                            <Token
+                                type={type}
+                                value={value}
+                                style={styles}
+                                key={col}
+                            />
+                        );
+                    }
                 }
-                const primaryType = type.replace(/(?<=^_?[A-Z]+)_.+/, '');
-                // @ts-ignore FIX ME LATER
-                const styles = themeObj.tokens[primaryType] || undefined;
-                return (
-                    <Token type={type} value={value} style={styles} key={col} />
-                );
             },
         );
 
         const currentLine = lexerState.line;
         lexerState = { ...lexer.save() };
+
+        if (preventLineRender) {
+            lexerState.line = currentLine;
+            return null;
+        }
         return (
             <Line
                 lineNumber={shouldRenderLineNumbers ? currentLine : 0}

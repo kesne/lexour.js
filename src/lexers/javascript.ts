@@ -8,15 +8,8 @@ const STRINGESCAPE = /(?:\\u[A-Fa-f0-9]{4})|(?:\\.)/;
 
 export default moo.states({
     main: {
-        _PACKAGE_ANNOTATION_fullline: {
-            match: /\/\/@.*?$/,
-            value: s => s.replace(/(?:^\/\/@[ \t]*?)|(?:[ \t]*?$)/g, ''),
-        },
-        _PACKAGE_ANNOTATION_inline: {
-            // This isn't quite working
-            match: /\/\*@.*?@\*\//,
-            value: s => s.replace(/(?:^\/\*@[ \t]*?)|(?:[ \t]*?@\*\/$)/g, ''),
-        },
+        _LEXOUR_ANNOTATION_singleline: /[ \t]*\/\/@.*?$/,
+        _LEXOUR_ANNOTATION_inline: /\/\*@.*?@\*\//,
 
         COMMENT_block: { match: /\/\*/, push: 'commentBlock' },
         COMMENT_singleline: /\/\/.*$/,
