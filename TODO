@@ -15,7 +15,7 @@
 
 // CODE MAINTENANCE //
 [_] Redo token naming conventions (& theme).
-[_] Check lexers for possible improvements (collapse single/double quote string states, etc.)
+[_] ??? Simplify Line component and add withLineNumbers HOC ???
 
 // PACKAGE MAINTENANE //
 [_] Actually name the package
