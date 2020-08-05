@@ -8,11 +8,11 @@ const STRINGESCAPE = /(?:\\u[A-Fa-f0-9]{4})|(?:\\.)/;
 
 export default moo.states({
     main: {
-        _LEXOUR_ANNOTATION_singleline: {
+        LEXOUR_ANNOTATION_singleline: {
             match: /\/\/@.*?$/,
             value: s => s.replace(/^\/\/@[ \t]*/, ''),
         },
-        _LEXOUR_ANNOTATION_inline: {
+        LEXOUR_ANNOTATION_inline: {
             match: /\/\*@.*?@\*\//,
             value: s => s.replace(/^\/\*@[ \t]*|[ \t]*@\*\/$/g, ''),
         },
@@ -29,6 +29,7 @@ export default moo.states({
         PUNCTUATION_misc: /[\(\)\,\[\]\;\.]/,
 
         KEYWORD: [
+            'await',
             'break',
             'case',
             'catch',

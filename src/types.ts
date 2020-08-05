@@ -22,4 +22,5 @@ export type Props = {
 
     theme?: Theme;
     firstLine?: number;
+    showLineNumbers?: boolean;
 };
