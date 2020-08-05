@@ -2,8 +2,8 @@ import React from 'react';
 
 type Props = {
     lineNumber: number;
-    style: React.CSSProperties;
     children: React.ReactNodeArray;
+    style?: React.CSSProperties;
 };
 
 export default function Line({ lineNumber, style, children }: Props) {

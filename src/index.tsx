@@ -4,7 +4,7 @@ import { Props } from './types';
 import lexers from './lexers';
 import themes from './themes';
 import Line from './components/Line';
-import Token from './components/Token';
+import { LexerState } from 'moo';
 
 export default function CodeBlock({
     code,
@@ -12,9 +12,7 @@ export default function CodeBlock({
     theme = 'oneDarkPro',
     firstLine = 0,
 }: Props) {
-    const lexer = lexers[lang];
-    // Type of theme will be expanded to be either a string for the built-in
-    // themes, or a JSON object of the same format.
+    const lexer = typeof lang === 'string' ? lexers[lang] : lang;
     const themeObj = typeof theme === 'string' ? themes[theme] : theme;
     const shouldRenderLineNumbers = firstLine >= 1;
     const lineStart = shouldRenderLineNumbers ? Math.floor(firstLine) : 1;
@@ -22,54 +20,71 @@ export default function CodeBlock({
     // There may be a better way to split this to include the new line and not pass it in by force later.
     const codeLines = code.replace(/(?:^\n)|(?:\n$)/g, '').split('\n');
     // This could be turned into a reduce to keep all the reduce state internal.
-    let lexerState = { ...lexer.reset().save(), line: lineStart };
+    let lexerState: LexerState = { ...lexer.reset().save(), line: lineStart };
     const codeComponents = codeLines.map(codeLine => {
-        let preventLineRender = false;
+        const currentLine = lexerState.line;
+        let shouldSkipLine = false;
 
         const tokens = Array.from(
             lexer.reset(codeLine.concat('\n'), lexerState),
-            ({ type, value, col }, i) => {
-                switch (type) {
-                    case undefined: {
-                        throw new Error('Something has gone horribly wrong');
-                    }
-                    case '_LEXOUR_ANNOTATION_singleline': {
-                        if (i === 0) {
-                            preventLineRender = true;
-                        }
-                    }
-                    // This fall through is intentional
-                    case '_LEXOUR_ANNOTATION_inline': {
-                        return null;
-                    }
-                    case 'NEWLINE': {
-                        return null;
-                    }
-                    default: {
-                        const primaryType = type.replace(
-                            /(?<=^_?[A-Z]+)_.+/,
-                            '',
-                        );
-                        const styles =
-                            // @ts-ignore FIX ME LATER
-                            themeObj.tokens[primaryType] || undefined;
-                        return (
-                            <Token
-                                type={type}
-                                value={value}
-                                style={styles}
-                                key={col}
-                            />
-                        );
-                    }
+            ({ type, text, value, col, line }) => {
+                // === Handle undefined tokens ===
+                if (type === undefined) {
+                    throw new TypeError(
+                        `Lexer Error: Type of token "${value}" (line ${line}, col ${col}) is undefined!`,
+                    );
                 }
+                // === Handle lexour annotations ===
+                if (type.startsWith('_')) {
+                    if (/^KEEP[ \t]/.test(value)) {
+                        const style = themeObj.tokens
+                            ? themeObj.tokens['COMMENT']
+                            : undefined;
+                        return (
+                            <span style={style} key={col}>
+                                {text.replace('KEEP ', '')}
+                            </span>
+                        );
+                    }
+                    if (/^NEXT LINE[ \t]/.test(value)) {
+                        lexerState.line = 5;
+                    }
+                    if (/^MARK .*? AS .*?$/.test(value)) {
+                        const match: any = /^MARK (.*?) AS (.*?)(?=[ \t]*@\*\/)?$/.exec(
+                            value,
+                        );
+                        //@ts-ignore
+                        const style = themeObj.tokens[match[2].toUpperCase()];
+                        return (
+                            <span style={style} key={col}>
+                                {match[1]}
+                            </span>
+                        );
+                    }
+                    shouldSkipLine = true;
+                    return null;
+                }
+                // === Handle empty lines ===
+                if (type === 'EMPTYLINE') {
+                    // This is kind of a hacky solution, but it'll work for now
+                    return <span key={col}> </span>;
+                }
+
+                // === Handle all other token types ===
+                const primaryType = type.replace(/(?<=^_?[A-Z]+)_.+/, '');
+                // @ts-ignore Will fix when token names and style fetch is reworked
+                const style = themeObj.tokens[primaryType];
+                return (
+                    <span style={style} key={col}>
+                        {value}
+                    </span>
+                );
             },
         );
 
-        const currentLine = lexerState.line;
-        lexerState = { ...lexer.save() };
+        lexerState = lexer.save();
 
-        if (preventLineRender) {
+        if (shouldSkipLine) {
             lexerState.line = currentLine;
             return null;
         }

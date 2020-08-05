@@ -8,36 +8,26 @@ const STRINGESCAPE = /(?:\\u[A-Fa-f0-9]{4})|(?:\\.)/;
 
 export default moo.states({
     main: {
-        _LEXOUR_ANNOTATION_singleline: /[ \t]*\/\/@.*?$/,
-        _LEXOUR_ANNOTATION_inline: /\/\*@.*?@\*\//,
-
+        _LEXOUR_ANNOTATION_singleline: {
+            match: /\/\/@.*?$/,
+            value: s => s.replace(/^\/\/@[ \t]*/, ''),
+        },
+        _LEXOUR_ANNOTATION_inline: {
+            match: /\/\*@.*?@\*\//,
+            value: s => s.replace(/^\/\*@[ \t]*|[ \t]*@\*\/$/g, ''),
+        },
         COMMENT_block: { match: /\/\*/, push: 'commentBlock' },
         COMMENT_singleline: /\/\/.*$/,
         // Hashbang is apparently a new addition and also I think not finalized
         COMMENT_hashBang: /^#!.*$/,
 
-        // Strings could probably be collapsed to one state entry with regex lookback
         STRING_start: { match: ["'", '"'], push: 'string' },
-
         TEMPLATELITERAL_start: { match: '`', push: 'templateLiteral' },
 
         PUNCTUATION_leftBrace: { match: '{', push: 'main' },
         PUNCTUATION_rightBrace: { match: '}', pop: 1 },
         PUNCTUATION_misc: /[\(\)\,\[\]\;\.]/,
 
-        VARIABLE_declaration: new RegExp(
-            '(?<=(?:let|var)[\\[{\\t, _$A-Za-z]+?)' + validIdentifier,
-        ),
-        FUNCTION_declaration: new RegExp(
-            '(?<=function\\*?[\\t ]+?)' + validIdentifier,
-        ),
-        CONSTANT_declaration: new RegExp(
-            '(?<=const[[{\\t, _$A-Za-z]+?)' + validIdentifier,
-        ),
-        CONSTANT_classDeclaration: new RegExp(
-            '(?<=class[\\t ]+?)' + validIdentifier,
-        ),
-        CONSTANT_this: 'this',
         KEYWORD: [
             'break',
             'case',
@@ -81,21 +71,7 @@ export default moo.states({
             'with',
             'yield',
         ],
-        LITERAL_value: ['null', 'undefined', 'true', 'false'],
-        LITERAL_number: /[\d]+(?:\.[\d]+)?/,
-
-        // FUNCTION_declarationArrow: /[_$A-Za-z][_$A-Za-z0-9]*(?=[ \t]*?\=[ \t]*?\(.*?\)[ \t]/,
-        CONSTANT_superInvocation: /super(?=[ \t]*\(.*?)/,
-        CONSTANT_classRef: new RegExp(
-            '(?<=(?:extends|new)[\\t ]+?)' + validIdentifier,
-        ),
-        METHOD_invocation: new RegExp(
-            '(?<=\\.)' + validIdentifier + '(?=[ \\t]*\\(.*?)',
-        ),
-        FUNCTION_invocation: new RegExp(validIdentifier + '(?=[ \\t]*\\(.*?)'),
-        CONSTANT_unknownRef: /[A-Z][_$A-Za-z0-9]*/,
-        VARIABLE_unknownRef: new RegExp(validIdentifier),
-
+        KEYWORD_arrowFunc: '=>',
         OPERATOR: [
             // Arithmetic
             '+',
@@ -143,7 +119,35 @@ export default moo.states({
             '||',
             '!',
         ],
-        ARROWFUNCTION: '=>',
+        LITERAL_value: ['null', 'undefined', 'true', 'false'],
+        LITERAL_number: /[\d]+(?:\.[\d]+)?/,
+
+        CONSTANT_this: 'this',
+        // This is an incredibly aggressive regex and probably best replaced
+        FUNCTION_declarationArrow: new RegExp(validIdentifier + '(?=[^]*?=>)'),
+        VARIABLE_declaration: new RegExp(
+            '(?<=(?:let|var)[\\[{\\t, _$A-Za-z]+?)' + validIdentifier,
+        ),
+        FUNCTION_declaration: new RegExp(
+            '(?<=function\\*?[\\t ]+?)' + validIdentifier,
+        ),
+        CONSTANT_declaration: new RegExp(
+            '(?<=const[[{\\t, _$A-Za-z]+?)' + validIdentifier,
+        ),
+        CONSTANT_classDeclaration: new RegExp(
+            '(?<=class[\\t ]+?)' + validIdentifier,
+        ),
+
+        CONSTANT_superInvocation: /super(?=[ \t]*\(.*?)/,
+        CONSTANT_classRef: new RegExp(
+            '(?<=(?:extends|new)[\\t ]+?)' + validIdentifier,
+        ),
+        METHOD_invocation: new RegExp(
+            '(?<=\\.)' + validIdentifier + '(?=[ \\t]*\\(.*?)',
+        ),
+        FUNCTION_invocation: new RegExp(validIdentifier + '(?=[ \\t]*\\(.*?)'),
+        CONSTANT_unknownRef: /[A-Z][_$A-Za-z0-9]*/,
+        VARIABLE_unknownRef: new RegExp(validIdentifier),
 
         EMPTYLINE: { match: /^[ \t]*\n^/, lineBreaks: true },
         NEWLINE: { match: /\n/, lineBreaks: true },

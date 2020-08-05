@@ -5,7 +5,7 @@ import { Theme } from '../types';
 type Props = {
     type: string;
     value: string;
-    style: React.CSSProperties;
+    style?: React.CSSProperties;
 };
 
 export default function Token({ type, value, style }: Props) {
